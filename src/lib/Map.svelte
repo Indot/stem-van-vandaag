@@ -7,14 +7,14 @@
     // Fixed gray color for all municipalities
     export let fillColor: string = "#ececec";
     export let fillOpacity: number = 0.6;
+
     // Array of enabled area codes
     export let enabledAreas: string[] = [];
-    // Color for enabled areas - can be a string (all areas same color) or object mapping area codes to colors
-    export let enabledColor: string | Record<string, string> = "#3388ff";
+
+    export let areaProperties: Record<string, Record<string, any>> = {};
+
     // Default color for enabled areas if not specified in the map
     export let defaultEnabledColor: string = "#3388ff";
-    // URL prefix for area links
-    export let areaUrlPrefix: string = "";
     // Min and max zoom levels
     export let minZoom: number = 6;
     export let maxZoom: number = 9;
@@ -125,27 +125,16 @@
                     let areaFillColor = fillColor; // Default gray
 
                     if (isEnabled) {
-                        if (typeof enabledColor === "string") {
-                            // Use the single color for all enabled areas
-                            areaFillColor = enabledColor;
-                        } else if (
-                            typeof enabledColor === "object" &&
-                            statcode &&
-                            enabledColor[statcode]
-                        ) {
-                            // Use specific color for this area if defined
-                            areaFillColor = enabledColor[statcode];
-                        } else {
-                            // Fallback to default enabled color
-                            areaFillColor = defaultEnabledColor;
-                        }
+                        areaFillColor =
+                            areaProperties[statcode]?.color ??
+                            defaultEnabledColor;
                     }
 
                     return {
                         color: isEnabled
                             ? (areaFillColor ?? "#303030")
                             : "#bbb",
-                        weight: isEnabled ? 2 : 1,
+                        weight: 1,
                         opacity: 1,
                         fillColor: areaFillColor,
                         fillOpacity: isEnabled ? 0.6 : fillOpacity,
@@ -215,11 +204,15 @@
 
                             // Add click handler for enabled areas
                             layer.on("click", function () {
-                                if (
-                                    areaUrlPrefix &&
-                                    feature.properties.statcode
-                                ) {
-                                    window.location.href = `${areaUrlPrefix}${feature.properties.statcode}`;
+                                const statcode = feature?.properties?.statcode;
+
+                                if (areaProperties[statcode]?.link) {
+                                    window
+                                        .open(
+                                            areaProperties[statcode]?.link,
+                                            "_blank",
+                                        )
+                                        ?.focus();
                                 }
                             });
                         } else {
@@ -264,8 +257,8 @@
     .map-container {
         width: 100%;
         height: 100%;
-        min-height: 500px;
-        background-color: white;
+        background-color: transparent;
+        flex-grow: 1;
     }
 
     :global(.leaflet-container) {
@@ -302,7 +295,7 @@
         font-weight: bold;
         pointer-events: none;
         text-align: center;
-        border: 2px solid white;
+        border: 1px solid white;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         max-width: 200px;
         white-space: nowrap;
@@ -316,7 +309,7 @@
 
     :global(.leaflet-control-zoom) {
         margin: 10px;
-        border: 2px solid rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(0, 0, 0, 0.2);
         border-radius: 4px;
     }
 

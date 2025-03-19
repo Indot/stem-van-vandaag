@@ -17,17 +17,19 @@
         "GM0086", // Opsterland
         "GM1949", // Waadhoeke
     ];
-    const areaUrlPrefix = "/gebied/";
 
     // Define specific colors for each enabled area
-    const areaColors = {
-        GM1966: "#1bb7ba", // Hogeland
-        GM0080: "#007DC3", // Leeuwarden
-        GM1952: "#00C2A8", // Midden-Groningen
-        GM1970: "#009fe3", // Noardeast
-        GM0173: "#1d0d69", // Oldenzaal
-        GM0086: "#063", // Opsterland
-        GM1949: "#4BA69E", // Waadhoeke
+    const areaProperties = {
+        GM1966: { color: "#1bb7ba", link: "https://stemvanonshogeland.nl" }, // Hogeland
+        GM0080: { color: "#007DC3", link: "https://destemvanleeuwarden.nl" }, // Leeuwarden
+        GM1952: {
+            color: "#00C2A8",
+            link: "https://stemvan.midden-groningen.nl",
+        }, // Midden-Groningen
+        GM1970: { color: "#009fe3", link: "https://stemvannoardeast.nl" }, // Noardeast
+        GM0173: { color: "#1d0d69", link: "https://stemvanoldenzaal.nl" }, // Oldenzaal
+        GM0086: { color: "#063", link: "https://stemvan.opsterland.nl" }, // Opsterland
+        GM1949: { color: "#4BA69E", link: "https://stemvanwaadhoeke.nl" }, // Waadhoeke
     };
 
     // Load the GeoJSON file on component mount
@@ -76,11 +78,13 @@
 </script>
 
 <div class="app-container">
+    <div class="header">
+        <h1 class="title">Stem van Vandaag</h1>
+    </div>
     <Map
         {geoJSONData}
         {enabledAreas}
-        {areaUrlPrefix}
-        enabledColor={areaColors}
+        {areaProperties}
         defaultEnabledColor="#4CAF50"
         minZoom={8}
         maxZoom={14}
@@ -92,9 +96,34 @@
     .app-container {
         position: relative;
         width: 100%;
-        height: 100vh;
+        min-height: 100vh;
         margin: 0;
         padding: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header {
+        position: absolute;
+        width: 100%;
+        z-index: 500;
+        text-align: center;
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        background: rgb(255, 255, 255);
+        background: linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 1) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        pointer-events: none;
+    }
+
+    .title {
+        margin: 0;
+        font-size: 4rem;
+        font-family: "Cormorant Garamond", serif;
+        font-weight: 400;
     }
 
     :global(body) {
