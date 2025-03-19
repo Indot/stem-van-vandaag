@@ -15,7 +15,6 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
 - `/src/` - Source code
   - `/lib/` - Reusable Svelte components
     - `Map.svelte` - Leaflet map component
-    - `ControlPanel.svelte` - UI controls for the map
   - `App.svelte` - Main application component
   - `main.ts` - Entry point
   - `app.css` - Global styles
@@ -61,3 +60,5 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
 - Configure Vite to treat GeoJSON files as assets with `assetsInclude: ['**/*.geojson']`
 - Handle GeoJSON validation before processing
 - Implement proper error handling for GeoJSON loading
+- Map appearance is configured with fixed values (color, opacity, spacing)
+- The application has been simplified to focus solely on map visualization
