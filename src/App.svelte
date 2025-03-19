@@ -6,9 +6,17 @@
     import gemeentekaartUrl from "/gemeentekaart.geojson?url";
 
     let geoJSONData: any = null;
-    // Fixed values for map appearance
-    const fillColor = "#3388ff";
-    const fillOpacity = 0.2;
+
+    // Example of enabled areas - replace with your actual enabled area codes
+    const enabledAreas = ["GM0363", "GM0518", "GM0599"]; // Amsterdam, Den Haag, Rotterdam
+    const areaUrlPrefix = "/gebied/";
+
+    // Define specific colors for each enabled area
+    const areaColors = {
+        GM0363: "#e91e63", // Amsterdam - Pink
+        GM0518: "#2196f3", // Den Haag - Blue
+        GM0599: "#ff9800", // Rotterdam - Orange
+    };
 
     // Load the GeoJSON file on component mount
     onMount(async () => {
@@ -56,7 +64,16 @@
 </script>
 
 <div class="app-container">
-    <Map {geoJSONData} {fillColor} {fillOpacity} />
+    <Map
+        {geoJSONData}
+        {enabledAreas}
+        {areaUrlPrefix}
+        enabledColor={areaColors}
+        defaultEnabledColor="#4CAF50"
+        minZoom={8}
+        maxZoom={14}
+        maxBoundsPadding={0.3}
+    />
 </div>
 
 <style>
