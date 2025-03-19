@@ -39,12 +39,8 @@
             minZoom: minZoom, // Set minimum zoom level
             maxZoom: maxZoom, // Set maximum zoom level
             layers: [],
-            inertia: true, // Enable inertia for smoother dragging
-            inertiaDeceleration: 2000, // Lower value for more inertia (slower deceleration)
-            inertiaMaxSpeed: 1500, // Maximum speed of inertia
-            zoomAnimation: true, // Enable zoom animation
-            fadeAnimation: true, // Enable fade animation
             markerZoomAnimation: true, // Enable marker zoom animation
+            renderer: new L.SVG({ padding: 5 }), // Use SVG renderer with padding
         }).setView([0, 0], minZoom + 1);
 
         // Add zoom control in the bottom right corner
@@ -56,6 +52,8 @@
 
         // Force the zoom level to stay within bounds when bounds change
         map.on("zoomend", function () {
+            map.fitBounds(map.getBounds());
+
             if (map.getZoom() < minZoom) {
                 map.setZoom(minZoom);
             } else if (map.getZoom() > maxZoom) {
@@ -109,7 +107,7 @@
             geoJSONLayer = L.geoJSON(bufferedGeoJSON, {
                 interactive: true, // Keep interactive for hover but disable click
                 style: function (feature) {
-                    const statcode = feature.properties?.statcode;
+                    const statcode = feature?.properties?.statcode;
                     const isEnabled =
                         statcode && enabledAreas.includes(statcode);
 
@@ -152,32 +150,36 @@
                         if (feature.properties.statnaam) {
                             // Use mousemove to dynamically create and position a div tooltip
                             let customTooltip: HTMLDivElement | null = null;
-                            
+
                             // On mouse over the area
-                            layer.on('mouseover', function() {
+                            layer.on("mouseover", function () {
                                 // Create tooltip element if it doesn't exist
                                 if (!customTooltip) {
-                                    customTooltip = document.createElement('div');
-                                    customTooltip.className = isEnabled ? 'custom-tooltip-enabled' : 'custom-tooltip';
-                                    customTooltip.textContent = feature.properties.statnaam;
+                                    customTooltip =
+                                        document.createElement("div");
+                                    customTooltip.className = isEnabled
+                                        ? "custom-tooltip-enabled"
+                                        : "custom-tooltip";
+                                    customTooltip.textContent =
+                                        feature.properties.statnaam;
                                     document.body.appendChild(customTooltip);
                                 }
                             });
-                            
+
                             // Update tooltip position on mouse move
-                            layer.on('mousemove', function(e) {
+                            layer.on("mousemove", function (e) {
                                 if (customTooltip) {
                                     // Position the tooltip near the cursor
                                     const x = e.originalEvent.pageX;
                                     const y = e.originalEvent.pageY - 30; // 30px above the cursor
-                                    customTooltip.style.left = x + 'px';
-                                    customTooltip.style.top = y + 'px';
-                                    customTooltip.style.display = 'block';
+                                    customTooltip.style.left = x + "px";
+                                    customTooltip.style.top = y + "px";
+                                    customTooltip.style.display = "block";
                                 }
                             });
-                            
+
                             // Remove tooltip on mouse out
-                            layer.on('mouseout', function() {
+                            layer.on("mouseout", function () {
                                 if (customTooltip) {
                                     document.body.removeChild(customTooltip);
                                     customTooltip = null;
@@ -262,7 +264,7 @@
     }
 
     /* Styles now moved to custom tooltips */
-    
+
     /* Custom tooltip styles */
     :global(.custom-tooltip) {
         position: absolute;
@@ -279,7 +281,7 @@
         overflow: hidden;
         text-overflow: ellipsis;
     }
-    
+
     :global(.custom-tooltip-enabled) {
         position: absolute;
         z-index: 9999;
