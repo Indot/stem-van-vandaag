@@ -86,6 +86,7 @@
                 },
                 onEachFeature: (feature, layer) => {
                     if (feature.properties) {
+                        // Bind popup with all properties
                         const popupContent = Object.entries(feature.properties)
                             .map(
                                 ([key, value]) =>
@@ -94,6 +95,15 @@
                             .join("<br>");
                         if (popupContent) {
                             layer.bindPopup(popupContent);
+                        }
+                        
+                        // Bind tooltip with statnaam property for hover
+                        if (feature.properties.statnaam) {
+                            layer.bindTooltip(feature.properties.statnaam, {
+                                permanent: false,
+                                direction: 'center',
+                                className: 'map-tooltip'
+                            });
                         }
                     }
                 },
@@ -121,6 +131,16 @@
     :global(.leaflet-container) {
         height: 100%;
         width: 100%;
+    }
+    
+    :global(.map-tooltip) {
+        background-color: rgba(0, 0, 0, 0.7);
+        border: none;
+        border-radius: 3px;
+        color: white;
+        font-weight: bold;
+        padding: 0.5rem;
+        text-align: center;
     }
 </style>
 

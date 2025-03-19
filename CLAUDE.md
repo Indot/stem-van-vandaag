@@ -9,6 +9,7 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
 - **Build for production**: `npm run build`
 - **Preview production build**: `npm run preview`
 - **Type-check**: `npm run check`
+- **Fix formatting issues**: `npm run fix`
 
 ## Project Structure
 - `/public/` - Static assets including the default gemeentekaart.geojson file
