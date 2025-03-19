@@ -142,11 +142,13 @@
                     }
 
                     return {
-                        color: isEnabled ? "#303030" : "#bbb",
+                        color: isEnabled
+                            ? (areaFillColor ?? "#303030")
+                            : "#bbb",
                         weight: isEnabled ? 2 : 1,
                         opacity: 1,
                         fillColor: areaFillColor,
-                        fillOpacity: isEnabled ? 0.7 : fillOpacity,
+                        fillOpacity: isEnabled ? 0.6 : fillOpacity,
                         className: isEnabled ? "enabled-area" : "",
                     };
                 },
@@ -201,8 +203,6 @@
                             // Add hover styling for enabled areas
                             layer.on("mouseover", function () {
                                 layer.setStyle({
-                                    weight: 3,
-                                    color: "#000",
                                     dashArray: "",
                                     fillOpacity: 0.8,
                                 });

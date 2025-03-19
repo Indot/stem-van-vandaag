@@ -8,14 +8,26 @@
     let geoJSONData: any = null;
 
     // Example of enabled areas - replace with your actual enabled area codes
-    const enabledAreas = ["GM0363", "GM0518", "GM0599"]; // Amsterdam, Den Haag, Rotterdam
+    const enabledAreas = [
+        "GM1966", // Hogeland
+        "GM0080", // Leeuwarden
+        "GM1952", // Midden-Groningen
+        "GM1970", // Noardeast
+        "GM0173", // Oldenzaal
+        "GM0086", // Opsterland
+        "GM1949", // Waadhoeke
+    ];
     const areaUrlPrefix = "/gebied/";
 
     // Define specific colors for each enabled area
     const areaColors = {
-        GM0363: "#e91e63", // Amsterdam - Pink
-        GM0518: "#2196f3", // Den Haag - Blue
-        GM0599: "#ff9800", // Rotterdam - Orange
+        GM1966: "#1bb7ba", // Hogeland
+        GM0080: "#007DC3", // Leeuwarden
+        GM1952: "#00C2A8", // Midden-Groningen
+        GM1970: "#009fe3", // Noardeast
+        GM0173: "#1d0d69", // Oldenzaal
+        GM0086: "#063", // Opsterland
+        GM1949: "#4BA69E", // Waadhoeke
     };
 
     // Load the GeoJSON file on component mount
