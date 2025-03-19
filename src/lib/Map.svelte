@@ -5,7 +5,7 @@
 
     export let geoJSONData: any;
     // Fixed gray color for all municipalities
-    export let fillColor: string = "#808080";
+    export let fillColor: string = "#ececec";
     export let fillOpacity: number = 0.6;
     // Array of enabled area codes
     export let enabledAreas: string[] = [];
@@ -89,18 +89,28 @@
             // Create a new GeoJSON with buffered geometries
             const bufferedGeoJSON = {
                 type: geoJSONData.type,
-                features: geoJSONData.features.map((feature: any) => {
-                    try {
-                        return {
-                            type: feature.type,
-                            properties: feature.properties || {},
-                            geometry: feature.geometry,
-                        };
-                    } catch (e) {
-                        console.warn("Error buffering feature:", e);
-                        return feature; // Return original feature if buffering fails
-                    }
-                }),
+                features: geoJSONData.features
+                    .map((feature: any) => {
+                        try {
+                            return {
+                                type: feature.type,
+                                properties: feature.properties || {},
+                                geometry: feature.geometry,
+                            };
+                        } catch (e) {
+                            console.warn("Error buffering feature:", e);
+                            return feature; // Return original feature if buffering fails
+                        }
+                    })
+                    .sort((a, b) => {
+                        const aEnabled =
+                            a.properties.statcode &&
+                            enabledAreas.includes(a.properties.statcode);
+                        const bEnabled =
+                            b.properties.statcode &&
+                            enabledAreas.includes(b.properties.statcode);
+                        return aEnabled === bEnabled ? 0 : aEnabled ? 1 : -1;
+                    }),
             };
 
             // Add the new layer to the map with fixed gray style
@@ -132,7 +142,7 @@
                     }
 
                     return {
-                        color: isEnabled ? "#303030" : "#505050", // darker border for enabled areas
+                        color: isEnabled ? "#303030" : "#bbb",
                         weight: isEnabled ? 2 : 1,
                         opacity: 1,
                         fillColor: areaFillColor,
