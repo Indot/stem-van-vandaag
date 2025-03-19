@@ -1,0 +1,33 @@
+/* Reset and base styles */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Leaflet specific styles */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Import Leaflet CSS through CDN */
+@import url("https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css");
