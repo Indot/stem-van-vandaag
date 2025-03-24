@@ -1,7 +1,7 @@
 <script lang="ts">
-    import mapboxgl from "mapbox-gl";
+    import maplibregl from "maplibre-gl";
 
-    import "mapbox-gl/dist/mapbox-gl.css";
+    import "maplibre-gl/dist/maplibre-gl.css";
 
     let {
         geoJSONData,
@@ -20,15 +20,18 @@
 
         if (!geoJSONData) return;
 
-        const map = new mapboxgl.Map({
+        const map = new maplibregl.Map({
             container: mapElement,
             style: { version: 8, sources: {}, layers: [] },
             zoom: 7,
+            attributionControl: false,
         });
         let hoveredPolygonId: string | null = null;
 
         map.on("load", () => {
-            map.addSource("gemeenten", {
+            const gemeentenId = "gemeenten";
+
+            map.addSource(gemeentenId, {
                 type: "geojson",
                 data: geoJSONData,
                 generateId: true,
@@ -39,7 +42,7 @@
             map.addLayer({
                 id: "state-fills",
                 type: "fill",
-                source: "gemeenten",
+                source: gemeentenId,
                 layout: {},
                 paint: {
                     "fill-color": fillColor,
@@ -55,7 +58,7 @@
             map.addLayer({
                 id: "state-borders",
                 type: "line",
-                source: "gemeenten",
+                source: gemeentenId,
                 layout: {},
                 paint: {
                     "line-color": lineColor,
@@ -63,26 +66,45 @@
                 },
             });
 
-            // When the user moves their mouse over the state-fill layer, we'll update the
-            // feature state for the feature under the mouse.
-            map.on("mousemove", "state-fills", (e) => {
-                if ((e.features?.length ?? 0) > 0) {
-                    if (hoveredPolygonId !== null) {
-                        map.setFeatureState(
-                            { source: "gemeenten", id: hoveredPolygonId },
-                            { hover: false },
-                        );
-                    }
+            const popup = new maplibregl.Popup({
+                closeButton: false,
+                closeOnClick: false,
+            });
 
+            map.on("mousemove", "state-fills", (e) => {
+                if (hoveredPolygonId !== null) {
+                    map.setFeatureState(
+                        { source: gemeentenId, id: hoveredPolygonId },
+                        { hover: false },
+                    );
+                }
+
+                if ((e.features?.length ?? 0) > 0) {
                     hoveredPolygonId = String(e.features?.[0].id) ?? null;
                     map.setFeatureState(
-                        { source: "gemeenten", id: hoveredPolygonId },
+                        { source: gemeentenId, id: hoveredPolygonId },
                         { hover: true },
                     );
                 }
+
+                popup
+                    .setLngLat(e.lngLat)
+                    .setText(e.features?.[0].properties?.statnaam ?? "")
+                    .addTo(map);
             });
 
-            const bounds = new mapboxgl.LngLatBounds();
+            map.on("mouseleave", "state-fills", () => {
+                if (hoveredPolygonId !== null) {
+                    map.setFeatureState(
+                        { source: gemeentenId, id: hoveredPolygonId },
+                        { hover: false },
+                    );
+                }
+                hoveredPolygonId = null;
+                popup.remove();
+            });
+
+            const bounds = new maplibregl.LngLatBounds();
             for (const feature of geoJSONData.features) {
                 for (const coordinates of feature.geometry.coordinates) {
                     for (const coordinate of coordinates) {
@@ -185,5 +207,13 @@
 
     :global(.mapboxgl-ctrl-logo) {
         display: none !important;
+    }
+
+    :global(.maplibregl-canvas-container.maplibregl-interactive) {
+        cursor: default;
+    }
+
+    :global(.maplibregl-canvas-container.maplibregl-interactive:active) {
+        cursor: move;
     }
 </style>
