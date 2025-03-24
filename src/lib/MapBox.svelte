@@ -112,6 +112,8 @@
                 const statcode = e.features?.[0].properties?.statcode;
                 if (areaProperties[statcode]?.link) {
                     map.getCanvas().style.cursor = "pointer";
+                } else {
+                    map.getCanvas().style.cursor = "";
                 }
 
                 if (hoveredPolygonId !== null) {
