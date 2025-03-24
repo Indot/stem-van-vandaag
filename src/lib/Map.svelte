@@ -17,7 +17,6 @@
     export let defaultEnabledColor: string = "#3388ff";
     // Min and max zoom levels
     export let minZoom: number = 6;
-    export let maxZoom: number = 9;
     // Max bounds - will default to slightly larger than the Netherlands
     export let maxBoundsPadding: number = 0.5; // padding beyond the GeoJSON bounds
 
@@ -36,11 +35,12 @@
             keyboard: true, // Enable keyboard navigation
             zoomControl: false, // We'll add custom zoom control
             attributionControl: false,
-            minZoom: minZoom, // Set minimum zoom level
-            maxZoom: maxZoom, // Set maximum zoom level
             layers: [],
             markerZoomAnimation: true, // Enable marker zoom animation
             renderer: new L.SVG({ padding: 5 }), // Use SVG renderer with padding
+            zoomSnap: 0,
+            wheelPxPerZoomLevel: 5,
+            wheelDebounceTime: 10,
         }).setView([0, 0], minZoom + 1);
 
         // Add zoom control in the bottom right corner
@@ -50,16 +50,12 @@
             })
             .addTo(map);
 
-        // Force the zoom level to stay within bounds when bounds change
-        map.on("zoomend", function () {
-            map.fitBounds(map.getBounds());
+        // map.fitBounds(map.getBounds());
 
-            if (map.getZoom() < minZoom) {
-                map.setZoom(minZoom);
-            } else if (map.getZoom() > maxZoom) {
-                map.setZoom(maxZoom);
-            }
-        });
+        // Force the zoom level to stay within bounds when bounds change
+        // map.on("zoomend", function () {
+        //     map.fitBounds(map.getBounds());
+        // });
 
         // Load GeoJSON if available
         if (geoJSONData) {
@@ -134,11 +130,12 @@
                         color: isEnabled
                             ? (areaFillColor ?? "#303030")
                             : "#bbb",
-                        weight: 1,
+                        weight: 0.5,
                         opacity: 1,
                         fillColor: areaFillColor,
                         fillOpacity: isEnabled ? 0.6 : fillOpacity,
                         className: isEnabled ? "enabled-area" : "",
+                        lineJoin: "round",
                     };
                 },
                 onEachFeature: (feature, layer) => {

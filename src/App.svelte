@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from "svelte";
-    import Map from "./lib/Map.svelte";
+    import MapBox from "./lib/MapBox.svelte";
 
     // Import gemeentekaart.geojson
     import gemeentekaartUrl from "/gemeentekaart.geojson?url";
@@ -81,7 +81,7 @@
     <div class="header">
         <h1 class="title">Stem van Vandaag</h1>
     </div>
-    <Map
+    <MapBox
         {geoJSONData}
         {enabledAreas}
         {areaProperties}

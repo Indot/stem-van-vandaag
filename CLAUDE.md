@@ -1,9 +1,11 @@
 # CLAUDE.md - StemVanVandaag Project Guidelines
 
 ## Project Overview
+
 A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite, and Leaflet.js for visualization.
 
 ## Commands
+
 - **Install dependencies**: `npm install`
 - **Run locally**: `npm run dev` (starts dev server at http://localhost:5173)
 - **Build for production**: `npm run build`
@@ -12,6 +14,7 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
 - **Fix formatting issues**: `npm run fix`
 
 ## Project Structure
+
 - `/public/` - Static assets including the default gemeentekaart.geojson file
 - `/src/` - Source code
   - `/lib/` - Reusable Svelte components
@@ -21,17 +24,18 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
   - `app.css` - Global styles
 
 ## Code Style Guidelines
-- **Svelte**: 
+
+- **Svelte**:
   - Use TypeScript for type-safety
   - Keep components focused on a single responsibility
   - Use reactive statements with `$:` for derived state
   - Leverage Svelte's built-in reactivity
-- **CSS**: 
+- **CSS**:
   - Scope styles within components
   - Group related properties
   - Use classes for reusable styles
   - Prefer rem/em over px
-- **TypeScript**: 
+- **TypeScript**:
   - Define interfaces for data structures
   - Use camelCase for variables and functions
   - Add descriptive comments for complex logic
@@ -40,6 +44,7 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
   - Use descriptive variable/function names
 
 ## Naming Conventions
+
 - **Components**: Use PascalCase (e.g., `Map.svelte`, `ControlPanel.svelte`)
 - **IDs/Classes**: Use kebab-case (e.g., `file-drop`, `control-panel`)
 - **Functions**: Use descriptive verbs (e.g., `updateStatus`, `handleFile`)
@@ -47,6 +52,7 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
 - **Props**: Use camelCase for component props
 
 ## Best Practices
+
 - Use Svelte's reactive declarations for derived state
 - Keep components small and focused on a single responsibility
 - Use TypeScript for type safety
@@ -56,6 +62,7 @@ A simple GeoJSON map viewer web application built with Svelte, TypeScript, Vite,
 - Maintain a clean UI with intuitive controls
 
 ## GeoJSON Integration
+
 - Store GeoJSON files in the `/public` directory
 - Use Vite's `?url` import suffix to load GeoJSON files
 - Configure Vite to treat GeoJSON files as assets with `assetsInclude: ['**/*.geojson']`
