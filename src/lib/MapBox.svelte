@@ -1,6 +1,5 @@
 <script lang="ts">
     import maplibregl from "maplibre-gl";
-
     import "maplibre-gl/dist/maplibre-gl.css";
 
     let {
@@ -8,7 +7,6 @@
         fillColor = "#ececec",
         fillOpacity = 0.6,
         lineColor = "#bbb",
-        enabledAreas = [],
         areaProperties = {},
         defaultEnabledColor = "#3388ff",
     } = $props();
@@ -37,20 +35,31 @@
                 generateId: true,
             });
 
-            // The feature-state dependent fill-opacity expression will render the hover effect
-            // when a feature's hover state is set to true.
             map.addLayer({
                 id: "state-fills",
                 type: "fill",
                 source: gemeentenId,
                 layout: {},
                 paint: {
-                    "fill-color": fillColor,
+                    // @ts-expect-error
+                    "fill-color": [
+                        "match",
+                        ["get", "statcode"],
+                        ...Object.entries(areaProperties).flatMap(
+                            ([key, value]) =>
+                                [
+                                    key,
+                                    (value.color as string) ??
+                                        defaultEnabledColor,
+                                ] as const,
+                        ),
+                        fillColor,
+                    ],
                     "fill-opacity": [
                         "case",
                         ["boolean", ["feature-state", "hover"], false],
                         1,
-                        0.5,
+                        fillOpacity,
                     ],
                 },
             });
@@ -59,9 +68,37 @@
                 id: "state-borders",
                 type: "line",
                 source: gemeentenId,
-                layout: {},
+                layout: {
+                    "line-sort-key": [
+                        "case",
+                        [
+                            "boolean",
+                            [
+                                "in",
+                                ["get", "statcode"],
+                                ["literal", Object.keys(areaProperties)],
+                            ],
+                            true,
+                        ],
+                        1,
+                        0,
+                    ],
+                },
                 paint: {
-                    "line-color": lineColor,
+                    // @ts-expect-error
+                    "line-color": [
+                        "match",
+                        ["get", "statcode"],
+                        ...Object.entries(areaProperties).flatMap(
+                            ([key, value]) =>
+                                [
+                                    key,
+                                    (value.color as string) ??
+                                        defaultEnabledColor,
+                                ] as const,
+                        ),
+                        lineColor,
+                    ],
                     "line-width": 0.5,
                 },
             });
@@ -72,6 +109,11 @@
             });
 
             map.on("mousemove", "state-fills", (e) => {
+                const statcode = e.features?.[0].properties?.statcode;
+                if (areaProperties[statcode]?.link) {
+                    map.getCanvas().style.cursor = "pointer";
+                }
+
                 if (hoveredPolygonId !== null) {
                     map.setFeatureState(
                         { source: gemeentenId, id: hoveredPolygonId },
@@ -94,6 +136,8 @@
             });
 
             map.on("mouseleave", "state-fills", () => {
+                map.getCanvas().style.cursor = "";
+
                 if (hoveredPolygonId !== null) {
                     map.setFeatureState(
                         { source: gemeentenId, id: hoveredPolygonId },
@@ -102,6 +146,17 @@
                 }
                 hoveredPolygonId = null;
                 popup.remove();
+            });
+
+            // Add click handler for enabled areas
+            map.on("click", "state-fills", (e) => {
+                const statcode = e.features?.[0].properties?.statcode;
+
+                if (areaProperties[statcode]?.link) {
+                    window
+                        .open(areaProperties[statcode]?.link, "_blank")
+                        ?.focus();
+                }
             });
 
             const bounds = new maplibregl.LngLatBounds();

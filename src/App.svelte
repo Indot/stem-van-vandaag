@@ -7,17 +7,6 @@
 
     let geoJSONData: any = null;
 
-    // Example of enabled areas - replace with your actual enabled area codes
-    const enabledAreas = [
-        "GM1966", // Hogeland
-        "GM0080", // Leeuwarden
-        "GM1952", // Midden-Groningen
-        "GM1970", // Noardeast
-        "GM0173", // Oldenzaal
-        "GM0086", // Opsterland
-        "GM1949", // Waadhoeke
-    ];
-
     // Define specific colors for each enabled area
     const areaProperties = {
         GM1966: { color: "#1bb7ba", link: "https://stemvanonshogeland.nl" }, // Hogeland
@@ -81,15 +70,7 @@
     <div class="header">
         <h1 class="title">Stem van Vandaag</h1>
     </div>
-    <MapBox
-        {geoJSONData}
-        {enabledAreas}
-        {areaProperties}
-        defaultEnabledColor="#4CAF50"
-        minZoom={8}
-        maxZoom={14}
-        maxBoundsPadding={0.3}
-    />
+    <MapBox {geoJSONData} {areaProperties} defaultEnabledColor="#4CAF50" />
 </div>
 
 <style>
